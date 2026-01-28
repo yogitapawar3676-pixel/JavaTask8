@@ -1,0 +1,76 @@
+
+interface Payment {
+    void pay(double amount);
+}
+
+interface Refundable {
+    void refund(double amount);
+}
+
+interface TransactionHistory {
+    void showHistory();
+}
+
+class CreditCardPayment implements Payment {
+    public void pay(double amount) {
+        System.out.println("Paid " + amount + " using Credit Card.");
+    }
+}
+
+class DebitCardPayment implements Payment {
+    public void pay(double amount) {
+        System.out.println("Paid " + amount + " using Debit Card.");
+    }
+}
+
+class UpiPayment implements Payment {
+    @Override
+    public void pay(double amount) {
+        System.out.println("Paid " + amount + " using UPI.");
+    }
+}
+
+class WalletPayment implements Payment, Refundable, TransactionHistory {
+    public void pay(double amount) {
+        System.out.println("Paid " + amount + " using Wallet.");
+    }
+
+    public void refund(double amount) {
+        System.out.println("Refunded " + amount + " to Wallet.");
+    }
+
+    public void showHistory() {
+        System.out.println("Showing Wallet transaction history...");
+    }
+}
+
+class PaymentProcessor {
+    private Payment payment;
+
+    public PaymentProcessor(Payment payment) {
+        this.payment = payment;
+    }
+
+    public void processPayment(double amount) {
+        payment.pay(amount);
+    }
+}
+
+public class PaymentGatewaySimulator {
+    public static void main(String[] args) {
+        PaymentProcessor processor1 = new PaymentProcessor(new CreditCardPayment());
+        processor1.processPayment(500.0);
+
+        PaymentProcessor processor2 = new PaymentProcessor(new DebitCardPayment());
+        processor2.processPayment(300.0);
+
+        PaymentProcessor processor3 = new PaymentProcessor(new UpiPayment());
+        processor3.processPayment(250.0);
+
+        WalletPayment wallet = new WalletPayment();
+        PaymentProcessor processor4 = new PaymentProcessor(wallet);
+        processor4.processPayment(1000.0);
+        wallet.refund(200.0);
+        wallet.showHistory();
+    }
+}
